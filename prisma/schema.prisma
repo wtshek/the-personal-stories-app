@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Gender {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  label String
+  stories Story[]
+}
+
+model Industry {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  label String
+  stories Story[]
+}
+
+model Story {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  story String
+  owner String
+  address String
+  lat_long String[] // should be decimal but mongodb doesn't support
+  linkedIn String? 
+  instagram String?
+  facebook String?
+  industry Industry @relation(fields: [industryId], references: [id])
+  industryId String @db.ObjectId
+  gender Gender @relation(fields: [genderId], references: [id])
+  genderId String @db.ObjectId
+}
