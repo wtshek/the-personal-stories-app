@@ -20,7 +20,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/prisma/*": ["./prisma/*"]
     },
     "types": ["jest", "node", "@testing-library/jest-dom"]
   },
