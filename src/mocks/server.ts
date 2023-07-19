@@ -1,7 +1,5 @@
 import { setupServer } from "msw/node";
-// import { handlers } from "./handlers";
 
-// TODO: write actual test
-const handlers: any[] = [];
+import { handlers } from "./handler";
 
 export const server = setupServer(...handlers);

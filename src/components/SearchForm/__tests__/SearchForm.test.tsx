@@ -45,7 +45,5 @@ describe("Search Form Test Suite", () => {
       searchTerm: "Happy",
       location: "London",
     });
-
-    // TODO: call api
   });
 });

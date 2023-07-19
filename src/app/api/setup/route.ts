@@ -4,7 +4,7 @@ import prisma from "@/prisma/prisma";
 import {
   gender as genderConfig,
   industries as industriesConfig,
-} from "@/src/utils/config";
+} from "@/utils/config";
 
 export async function GET() {
   let gender, industries;
