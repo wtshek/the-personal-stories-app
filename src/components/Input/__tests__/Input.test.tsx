@@ -1,6 +1,6 @@
 import React, { use } from "react";
 
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Input } from "../Input";
@@ -28,7 +28,9 @@ describe("Input component", () => {
     const inputElement = screen.getByLabelText(label) as HTMLInputElement;
     const newValue = "J";
 
-    await userEvent.type(inputElement, newValue);
+    await act(async () => {
+      await userEvent.type(inputElement, newValue);
+    });
 
     expect(onChange).toHaveBeenCalledWith(newValue);
   });

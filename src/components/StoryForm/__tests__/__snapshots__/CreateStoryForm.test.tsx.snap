@@ -41,6 +41,19 @@ exports[`Create Story Form Suite should render the create form 1`] = `
       </div>
       <div>
         <label
+          for="owner"
+        >
+          Owner: 
+        </label>
+        <input
+          class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
+          id="owner"
+          placeholder="Owner: "
+          value=""
+        />
+      </div>
+      <div>
+        <label
           for="industry"
         >
           Industry: 
@@ -187,6 +200,19 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="location"
           placeholder="Location: "
+          value=""
+        />
+      </div>
+      <div>
+        <label
+          for="owner"
+        >
+          Owner: 
+        </label>
+        <input
+          class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
+          id="owner"
+          placeholder="Owner: "
           value=""
         />
       </div>

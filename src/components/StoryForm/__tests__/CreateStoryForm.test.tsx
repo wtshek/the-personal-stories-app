@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { gendersMock, industriesMock } from "@/utils/mockData";
@@ -38,6 +38,7 @@ describe("Create Story Form Suite", () => {
     renderComponent();
     const businessNameInput = screen.getByLabelText("Business Name:");
     const locationInput = screen.getByLabelText("Location:");
+    const ownerInput = screen.getByLabelText("Owner:");
     const industrySelect = screen.getByLabelText("Industry:");
     const genderSelect = screen.getByLabelText("Gender:");
     const websiteInput = screen.getByLabelText("Website:");
@@ -46,18 +47,21 @@ describe("Create Story Form Suite", () => {
     const instagramInput = screen.getByLabelText("Instagram:");
     const submitButton = screen.getByText("Submit");
 
-    // Fill in the form fields
-    await userEvent.type(businessNameInput, "Test Business");
-    await userEvent.type(locationInput, "Test Location");
-    await userEvent.selectOptions(industrySelect, industriesMock[0].id);
-    await userEvent.selectOptions(genderSelect, gendersMock[0].id);
-    await userEvent.type(websiteInput, "http://test-website.com");
-    await userEvent.type(linkedInInput, "http://linkedin.com/test");
-    await userEvent.type(facebookInput, "http://facebook.com/test");
-    await userEvent.type(instagramInput, "http://instagram.com/test");
+    await act(async () => {
+      // Fill in the form fields
+      await userEvent.type(businessNameInput, "Test Business");
+      await userEvent.type(locationInput, "Test Location");
+      await userEvent.type(ownerInput, "Test Owner");
+      await userEvent.selectOptions(industrySelect, industriesMock[0].id);
+      await userEvent.selectOptions(genderSelect, gendersMock[0].id);
+      await userEvent.type(websiteInput, "http://test-website.com");
+      await userEvent.type(linkedInInput, "http://linkedin.com/test");
+      await userEvent.type(facebookInput, "http://facebook.com/test");
+      await userEvent.type(instagramInput, "http://instagram.com/test");
 
-    // Submit the form
-    await userEvent.click(submitButton);
+      // Submit the form
+      await userEvent.click(submitButton);
+    });
 
     // Expect the onCreate function to be called with the form data
     expect(onCreateMock).toHaveBeenCalledWith({
@@ -70,6 +74,7 @@ describe("Create Story Form Suite", () => {
       linkedIn: "http://linkedin.com/test",
       facebook: "http://facebook.com/test",
       instagram: "http://instagram.com/test",
+      owner: "Test Owner",
     });
   });
 });

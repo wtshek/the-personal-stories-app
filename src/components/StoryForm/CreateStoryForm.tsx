@@ -23,17 +23,7 @@ export type CreateStoryFormBaseProps = {
 };
 
 export type CreateStoryFormProps = CreateStoryFormBaseProps & {
-  onSubmit: ({
-    businessName,
-    location,
-    linkedIn,
-    instagram,
-    website,
-    facebook,
-    industry,
-    gender,
-    story,
-  }: {
+  onSubmit: (arg: {
     businessName: string;
     location: string;
     linkedIn: string;
@@ -43,6 +33,7 @@ export type CreateStoryFormProps = CreateStoryFormBaseProps & {
     industry: string;
     gender: string;
     story: string;
+    owner: string;
   }) => void;
   type: "CREATE" | "EDIT";
 };
@@ -54,6 +45,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
   type,
 }) => {
   const [businessName, setBusinessName] = useState("");
+  const [owner, setOwner] = useState("");
   const [location, setLocation] = useState("");
   const [linkedIn, setLinkedIn] = useState("");
   const [instagram, setInstagram] = useState("");
@@ -80,6 +72,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
       industry,
       gender,
       story,
+      owner,
     });
   };
 
@@ -101,6 +94,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
           label="Location: "
           id="location"
         />
+        <Input value={owner} onChange={setOwner} label="Owner: " id="owner" />
         <SelectInput
           value={industry}
           onChange={setIndustry}

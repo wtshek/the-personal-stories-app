@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { SearchForm } from "../SearchForm";
@@ -29,14 +29,17 @@ describe("Search Form Test Suite", () => {
       />,
     );
 
-    // typing input
-    await userEvent.type(getByPlaceholderText("Search here..."), "Happy");
-    await userEvent.type(getByPlaceholderText("Location"), "London");
-    await userEvent.selectOptions(getByTestId("industry-select"), "Aviation");
-    await userEvent.selectOptions(getByTestId("gender-select"), "Female");
-
     const submitButton = getByText("Search");
-    await userEvent.click(submitButton);
+
+    await act(async () => {
+      // typing input
+      await userEvent.type(getByPlaceholderText("Search here..."), "Happy");
+      await userEvent.type(getByPlaceholderText("Location"), "London");
+      await userEvent.selectOptions(getByTestId("industry-select"), "Aviation");
+      await userEvent.selectOptions(getByTestId("gender-select"), "Female");
+
+      await userEvent.click(submitButton);
+    });
 
     expect(onSearchClickMock).toHaveBeenCalledTimes(1);
     expect(onSearchClickMock).toHaveBeenCalledWith({

@@ -8,7 +8,7 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
   industries,
   genders,
 }) => {
-  const onSubmit = (arg: {
+  const onSubmit = async (arg: {
     businessName: string;
     location: string;
     linkedIn: string;
@@ -18,7 +18,18 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
     industry: string;
     gender: string;
     story: string;
-  }) => console.log(arg);
+    owner: string;
+  }) => {
+    const res = await fetch("/api/story", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(arg),
+    });
+
+    console.log(res);
+  };
 
   return (
     <CreateStoryForm

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Button } from "../Button";
@@ -33,7 +33,9 @@ describe("Button component", () => {
 
     const buttonElement = screen.getByRole("button", { name: /click me/i });
 
-    await userEvent.click(buttonElement);
+    await act(async () => {
+      await userEvent.click(buttonElement);
+    });
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
