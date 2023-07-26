@@ -1,27 +1,39 @@
+import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 
+import { SignInButton } from "@/components/Button";
+import { ProfileSetting } from "@/components/ProfileSetting/ProfileSetting";
 import { SearchFormClient as SearchForm } from "@/components/SearchForm";
-import { useSearchOption } from "@/hooks/useSearchOption";
+import { useStoryData } from "@/hooks/useStoryData";
+import { getSearchOptions, getUserStory } from "@/utils/api";
+import { getRandomStoryData } from "@/utils/devTools";
+
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
-export default function Home() {
-  const { genders, industries } = useSearchOption();
+export default async function Home() {
+  // const data = useStoryData();
+  const session = await getServerSession(authOptions);
+  const { email, id } = session?.user || {};
+  const stories = await getUserStory(id);
+  const isLoggedIn = !!email;
+
+  const data = getRandomStoryData(40);
+  const { genders, industries } = await getSearchOptions();
 
   return (
     <div className="flex">
       <div className="w-[400px] p-8 flex flex-col">
         <SearchForm industries={genders} genders={industries} />
         <hr className="mt-auto" />
-        <button
-          data-modal-target="newStoryModal"
-          data-modal-toggle="newStoryModal"
-          className="mt-4 bg-blue-700 text-white rounded-md py-2 px-4"
-        >
-          Create new stories
-        </button>
+        {isLoggedIn ? (
+          <ProfileSetting email={email} />
+        ) : (
+          <SignInButton className="mt-4 w-full" />
+        )}
       </div>
-      <Map />
+      <Map data={data as StoryData[]} />
     </div>
   );
 }
