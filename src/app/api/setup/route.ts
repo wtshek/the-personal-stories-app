@@ -5,6 +5,7 @@ import {
   gender as genderConfig,
   industries as industriesConfig,
 } from "@/utils/config";
+import { statusCode } from "@/utils/const";
 
 export async function GET() {
   let gender, industries;
@@ -18,5 +19,5 @@ export async function GET() {
     industries = await prisma.industry.createMany({ data: industriesConfig });
   }
 
-  return NextResponse.json({ gender, industries });
+  return NextResponse.json({ gender, industries, statusCode: statusCode.OK });
 }

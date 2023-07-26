@@ -1,7 +1,14 @@
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 import validator from "validator";
 
 import prisma from "@/prisma/prisma";
 import { getLatitudeLongitude } from "@/utils/api";
+import { statusCode } from "@/utils/const";
+
+import { authOptions } from "../auth/[...nextauth]/route";
+
+// TODO: use middleware
 
 export async function POST(request: Request) {
   try {
@@ -17,6 +24,11 @@ export async function POST(request: Request) {
       story,
       owner,
     } = await request.json();
+    const { user } = (await getServerSession(authOptions)) || {};
+
+    if (!user) {
+      return NextResponse.json({ statusCode: statusCode.UNAUTHORIZED });
+    }
 
     if (
       validator.isEmpty(businessName) ||
@@ -26,7 +38,7 @@ export async function POST(request: Request) {
       validator.isEmpty(industry) ||
       validator.isEmpty(owner)
     ) {
-      return new Response("Please provide a valid input", { status: 400 });
+      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
     }
 
     if (
@@ -35,7 +47,7 @@ export async function POST(request: Request) {
       !validator.isURL(linkedIn) ||
       !validator.isURL(facebook)
     ) {
-      return new Response("Please provide a valid input", { status: 400 });
+      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
     }
 
     // validate industry and gender objectID
@@ -54,8 +66,10 @@ export async function POST(request: Request) {
     // convert location from string to [lon, lat]
     const latitudeLongitude = await getLatitudeLongitude(location);
 
+    console.log(latitudeLongitude);
+
     if (!latitudeLongitude) {
-      return new Response("Please provide a valid location", { status: 400 });
+      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
     }
 
     await prisma.story.create({
@@ -75,14 +89,15 @@ export async function POST(request: Request) {
         industry: {
           connect: { id: industry },
         },
+        user: {
+          connect: { id: user.id },
+        },
       },
     });
 
-    return new Response("Created", { status: 201 });
+    return NextResponse.json({ statusCode: statusCode.CREATED });
   } catch (e) {
     console.error(e);
-    return new Response("API failed. Please contact administrator", {
-      status: 500,
-    });
+    return NextResponse.json({ statusCode: statusCode.INTERNAL_ERROR });
   }
 }
