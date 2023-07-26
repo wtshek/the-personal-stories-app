@@ -1,13 +1,24 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 
-import { CreateStoryForm, CreateStoryFormBaseProps } from "./CreateStoryForm";
+import { useRouter } from "next/navigation";
+
+import { statusCode } from "@/utils/const";
+
+import {
+  CreateStoryForm,
+  CreateStoryFormBaseProps,
+  TYPE,
+} from "./CreateStoryForm";
 
 export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
   industries,
   genders,
 }) => {
+  const [error, setError] = useState<string | undefined>();
+  const router = useRouter();
+
   const onSubmit = async (arg: {
     businessName: string;
     location: string;
@@ -28,7 +39,17 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
       body: JSON.stringify(arg),
     });
 
-    console.log(res);
+    if (res.status === statusCode.UNAUTHORIZED) {
+      setError("Please login to submit a new story");
+      return;
+    }
+
+    if (res.status === statusCode.INTERNAL_ERROR) {
+      setError("An error occur, please try again later");
+      return;
+    }
+
+    router.push("/");
   };
 
   return (
@@ -36,7 +57,8 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
       industries={industries}
       genders={genders}
       onSubmit={onSubmit}
-      type="CREATE"
+      type={TYPE.CREATED}
+      error={error}
     />
   );
 };

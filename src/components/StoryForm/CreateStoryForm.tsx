@@ -22,6 +22,11 @@ export type CreateStoryFormBaseProps = {
   }[];
 };
 
+export enum TYPE {
+  CREATED = "CREATED",
+  EDIT = "EDIT",
+}
+
 export type CreateStoryFormProps = CreateStoryFormBaseProps & {
   onSubmit: (arg: {
     businessName: string;
@@ -35,7 +40,8 @@ export type CreateStoryFormProps = CreateStoryFormBaseProps & {
     story: string;
     owner: string;
   }) => void;
-  type: "CREATE" | "EDIT";
+  type: TYPE;
+  error?: string;
 };
 
 export const CreateStoryForm: FC<CreateStoryFormProps> = ({
@@ -43,6 +49,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
   genders,
   onSubmit,
   type,
+  error,
 }) => {
   const [businessName, setBusinessName] = useState("");
   const [owner, setOwner] = useState("");
@@ -51,10 +58,10 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
   const [instagram, setInstagram] = useState("");
   const [website, setWebsite] = useState("");
   const [facebook, setFacebook] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [gender, setGender] = useState("");
+  const [industry, setIndustry] = useState(industries[0].id);
+  const [gender, setGender] = useState(genders[0].id);
   const [story, setStory] = useState("");
-  const isCreate = type === "CREATE";
+  const isCreate = type === TYPE.CREATED;
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     [],
@@ -118,7 +125,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
         <Input
           value={website}
           onChange={setWebsite}
-          label="Website: "
+          label="Website (optional): "
           id="website"
         />
         <Input
@@ -130,17 +137,18 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
         <Input
           value={facebook}
           onChange={setFacebook}
-          label="Facebook: "
+          label="Facebook (optional): "
           id="facebook"
         />
         <Input
           value={instagram}
           onChange={setInstagram}
-          label="Instagram: "
+          label="Instagram (optional): "
           id="instagram"
         />
         <Button type="submit">Submit</Button>
       </form>
+      <div className="text-red">{error}</div>
     </div>
   );
 };

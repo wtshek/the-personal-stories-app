@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { gendersMock, industriesMock } from "@/utils/mockData";
+import { gendersMock, industriesMock } from "@/utils/devTools/mockData";
 
 import { CreateStoryForm } from "../CreateStoryForm";
 
