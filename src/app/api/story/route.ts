@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import validator from "validator";
 
 import prisma from "@/prisma/prisma";
-import { getLatitudeLongitude } from "@/utils/api";
 import { statusCode } from "@/utils/const";
 
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
   try {
     const {
       businessName,
-      location,
+      address,
       linkedIn,
       instagram,
       website,
@@ -23,31 +22,36 @@ export async function POST(request: Request) {
       gender,
       story,
       owner,
+      latitude,
+      longitude,
     } = await request.json();
     const { user } = (await getServerSession(authOptions)) || {};
 
     if (!user) {
-      return NextResponse.json({ statusCode: statusCode.UNAUTHORIZED });
+      return NextResponse.json({}, { status: statusCode.UNAUTHORIZED });
     }
 
     if (
       validator.isEmpty(businessName) ||
       validator.isEmpty(story) ||
-      validator.isEmpty(location) ||
+      validator.isEmpty(address) ||
       validator.isEmpty(gender) ||
       validator.isEmpty(industry) ||
-      validator.isEmpty(owner)
+      validator.isEmpty(owner) ||
+      validator.isEmpty(latitude) ||
+      validator.isEmpty(longitude)
     ) {
-      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
+      return NextResponse.json({}, { status: statusCode.BAD_REQUEST });
     }
 
     if (
-      !validator.isURL(website) ||
-      !validator.isURL(instagram) ||
-      !validator.isURL(linkedIn) ||
-      !validator.isURL(facebook)
+      (!validator.isEmpty(website) && !validator.isURL(website)) ||
+      (!validator.isEmpty(instagram) && !validator.isURL(instagram)) ||
+      (!validator.isEmpty(linkedIn) && !validator.isURL(linkedIn)) ||
+      (!validator.isEmpty(facebook) && !validator.isURL(facebook))
     ) {
-      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
+      console.log("invalid url");
+      return NextResponse.json({}, { status: statusCode.BAD_REQUEST });
     }
 
     // validate industry and gender objectID
@@ -63,22 +67,13 @@ export async function POST(request: Request) {
       },
     });
 
-    // convert location from string to [lon, lat]
-    const latitudeLongitude = await getLatitudeLongitude(location);
-
-    console.log(latitudeLongitude);
-
-    if (!latitudeLongitude) {
-      return NextResponse.json({ statusCode: statusCode.BAD_REQUEST });
-    }
-
     await prisma.story.create({
       data: {
         name: businessName,
         story: story,
         owner,
-        lat_long: latitudeLongitude,
-        address: location,
+        lat_long: [latitude, longitude],
+        address,
         instagram,
         facebook,
         website,
@@ -95,9 +90,9 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ statusCode: statusCode.CREATED });
+    return NextResponse.json({}, { status: statusCode.CREATED });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ statusCode: statusCode.INTERNAL_ERROR });
+    return NextResponse.json({}, { status: statusCode.INTERNAL_ERROR });
   }
 }

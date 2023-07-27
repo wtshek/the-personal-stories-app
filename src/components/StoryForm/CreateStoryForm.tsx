@@ -3,11 +3,18 @@
 import React, { FC, FormEvent, useMemo, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 
+import { Button as FlowbitButton, Tooltip } from "flowbite-react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { SelectInput } from "@/components/SelectInput";
+
+import InfoIcon from "../../../public/info.svg";
+
+const ICON_WIDTH = 32;
+const ICON_HEIGHT = 32;
 
 // TODO: add image feature
 
@@ -30,7 +37,7 @@ export enum TYPE {
 export type CreateStoryFormProps = CreateStoryFormBaseProps & {
   onSubmit: (arg: {
     businessName: string;
-    location: string;
+    address: string;
     linkedIn: string;
     instagram: string;
     website: string;
@@ -39,6 +46,8 @@ export type CreateStoryFormProps = CreateStoryFormBaseProps & {
     gender: string;
     story: string;
     owner: string;
+    latitude: string;
+    longitude: string;
   }) => void;
   type: TYPE;
   error?: string;
@@ -53,7 +62,9 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
 }) => {
   const [businessName, setBusinessName] = useState("");
   const [owner, setOwner] = useState("");
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [linkedIn, setLinkedIn] = useState("");
   const [instagram, setInstagram] = useState("");
   const [website, setWebsite] = useState("");
@@ -71,7 +82,9 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
     e.preventDefault();
     onSubmit?.({
       businessName,
-      location,
+      address,
+      longitude: String(longitude),
+      latitude: String(latitude),
       linkedIn,
       instagram,
       website,
@@ -96,11 +109,64 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
           id="businessName"
         />
         <Input
-          value={location}
-          onChange={setLocation}
-          label="Location: "
-          id="location"
+          value={address}
+          onChange={setAddress}
+          label="Address: "
+          id="address"
         />
+        <div className="flex gap-4 items-end">
+          <Input
+            value={latitude}
+            onChange={setLatitude}
+            label="Latitude"
+            id="latitude"
+          />
+          <Input
+            value={longitude}
+            onChange={setLongitude}
+            label="Longitude"
+            id="longitude"
+          />
+          {/* <Image src={InfoIcon} alt="info-icon" width={32} height={32} /> */}
+          <Tooltip
+            content={
+              <div>
+                You can use this{" "}
+                <a
+                  className="text-blue-700 underline"
+                  href="https://www.latlong.net/convert-address-to-lat-long.html"
+                >
+                  website
+                </a>{" "}
+                to convert you address to latitude and longitude
+              </div>
+            }
+            style="light"
+          >
+            <button>
+              <InfoIcon
+                width={ICON_WIDTH}
+                height={ICON_HEIGHT}
+                className="fill-blue-700 stroke-1"
+              />
+            </button>
+          </Tooltip>
+          {/* <button data-popover-target="lat-long-popover">
+            <InfoIcon
+              width={ICON_WIDTH}
+              height={ICON_HEIGHT}
+              className="fill-blue-700 stroke-1"
+            />
+          </button>
+          <div
+            data-popover
+            id="lat-long-popover"
+            role="tooltip"
+            className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800"
+          >
+            <div>You can use this link</div>
+          </div> */}
+        </div>
         <Input value={owner} onChange={setOwner} label="Owner: " id="owner" />
         <SelectInput
           value={industry}

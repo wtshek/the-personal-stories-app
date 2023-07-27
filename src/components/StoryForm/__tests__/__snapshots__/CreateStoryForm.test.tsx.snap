@@ -8,7 +8,7 @@ exports[`Create Story Form Suite should render the create form 1`] = `
     <h1
       class="text-center text-blue-700 font-bold  text-5xl"
     >
-      Submit Your Story!
+      Edit Your Story!
     </h1>
     <form
       class="flex flex-col gap-4"
@@ -28,14 +28,14 @@ exports[`Create Story Form Suite should render the create form 1`] = `
       </div>
       <div>
         <label
-          for="location"
+          for="address"
         >
-          Location: 
+          Address: 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
-          id="location"
-          placeholder="Location: "
+          id="address"
+          placeholder="Address: "
           value=""
         />
       </div>
@@ -77,6 +77,16 @@ exports[`Create Story Form Suite should render the create form 1`] = `
           >
             Aviation
           </option>
+          <option
+            value="64b2bcb7d494db4be50a9ac3"
+          >
+            Chemical
+          </option>
+          <option
+            value="64b2bcb7d494db4be50a9ac8"
+          >
+            Energy
+          </option>
         </select>
       </div>
       <div>
@@ -105,12 +115,12 @@ exports[`Create Story Form Suite should render the create form 1`] = `
         <label
           for="website"
         >
-          Website: 
+          Website (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="website"
-          placeholder="Website: "
+          placeholder="Website (optional): "
           value=""
         />
       </div>
@@ -131,12 +141,12 @@ exports[`Create Story Form Suite should render the create form 1`] = `
         <label
           for="facebook"
         >
-          Facebook: 
+          Facebook (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="facebook"
-          placeholder="Facebook: "
+          placeholder="Facebook (optional): "
           value=""
         />
       </div>
@@ -144,12 +154,12 @@ exports[`Create Story Form Suite should render the create form 1`] = `
         <label
           for="instagram"
         >
-          Instagram: 
+          Instagram (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="instagram"
-          placeholder="Instagram: "
+          placeholder="Instagram (optional): "
           value=""
         />
       </div>
@@ -160,6 +170,9 @@ exports[`Create Story Form Suite should render the create form 1`] = `
         Submit
       </button>
     </form>
+    <div
+      class="text-red"
+    />
   </div>
 </div>
 `;
@@ -192,14 +205,14 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
       </div>
       <div>
         <label
-          for="location"
+          for="address"
         >
-          Location: 
+          Address: 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
-          id="location"
-          placeholder="Location: "
+          id="address"
+          placeholder="Address: "
           value=""
         />
       </div>
@@ -241,6 +254,16 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
           >
             Aviation
           </option>
+          <option
+            value="64b2bcb7d494db4be50a9ac3"
+          >
+            Chemical
+          </option>
+          <option
+            value="64b2bcb7d494db4be50a9ac8"
+          >
+            Energy
+          </option>
         </select>
       </div>
       <div>
@@ -269,12 +292,12 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
         <label
           for="website"
         >
-          Website: 
+          Website (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="website"
-          placeholder="Website: "
+          placeholder="Website (optional): "
           value=""
         />
       </div>
@@ -295,12 +318,12 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
         <label
           for="facebook"
         >
-          Facebook: 
+          Facebook (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="facebook"
-          placeholder="Facebook: "
+          placeholder="Facebook (optional): "
           value=""
         />
       </div>
@@ -308,12 +331,12 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
         <label
           for="instagram"
         >
-          Instagram: 
+          Instagram (optional): 
         </label>
         <input
           class="rounded-md border-2 border-gray-400 py-2 px-4 w-full"
           id="instagram"
-          placeholder="Instagram: "
+          placeholder="Instagram (optional): "
           value=""
         />
       </div>
@@ -324,6 +347,9 @@ exports[`Create Story Form Suite should render the edit form 1`] = `
         Submit
       </button>
     </form>
+    <div
+      class="text-red"
+    />
   </div>
 </div>
 `;

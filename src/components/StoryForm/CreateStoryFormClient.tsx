@@ -21,7 +21,7 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
 
   const onSubmit = async (arg: {
     businessName: string;
-    location: string;
+    address: string;
     linkedIn: string;
     instagram: string;
     website: string;
@@ -30,6 +30,8 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
     gender: string;
     story: string;
     owner: string;
+    latitude: string;
+    longitude: string;
   }) => {
     const res = await fetch("/api/story", {
       method: "POST",
@@ -41,6 +43,11 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
 
     if (res.status === statusCode.UNAUTHORIZED) {
       setError("Please login to submit a new story");
+      return;
+    }
+
+    if (res.status === statusCode.BAD_REQUEST) {
+      setError("Invalid Input");
       return;
     }
 

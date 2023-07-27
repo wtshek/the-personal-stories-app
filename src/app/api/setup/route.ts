@@ -19,5 +19,5 @@ export async function GET() {
     industries = await prisma.industry.createMany({ data: industriesConfig });
   }
 
-  return NextResponse.json({ gender, industries, statusCode: statusCode.OK });
+  return NextResponse.json({ gender, industries }, { status: statusCode.OK });
 }
