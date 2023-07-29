@@ -1,16 +1,15 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import validator from "validator";
 
 import prisma from "@/prisma/prisma";
 import { statusCode } from "@/utils/const";
+import { isStoryInputValid } from "@/utils/utils";
 
 import { authOptions } from "../auth/[...nextauth]/route";
 
-// TODO: use middleware
-
 export async function POST(request: Request) {
   try {
+    const data = await request.json();
     const {
       businessName,
       address,
@@ -18,71 +17,52 @@ export async function POST(request: Request) {
       instagram,
       website,
       facebook,
-      industry,
-      gender,
+      industryId,
+      genderId,
       story,
       owner,
       latitude,
       longitude,
-    } = await request.json();
+    } = data;
     const { user } = (await getServerSession(authOptions)) || {};
 
     if (!user) {
       return NextResponse.json({}, { status: statusCode.UNAUTHORIZED });
     }
 
-    if (
-      validator.isEmpty(businessName) ||
-      validator.isEmpty(story) ||
-      validator.isEmpty(address) ||
-      validator.isEmpty(gender) ||
-      validator.isEmpty(industry) ||
-      validator.isEmpty(owner) ||
-      validator.isEmpty(latitude) ||
-      validator.isEmpty(longitude)
-    ) {
-      return NextResponse.json({}, { status: statusCode.BAD_REQUEST });
-    }
-
-    if (
-      (!validator.isEmpty(website) && !validator.isURL(website)) ||
-      (!validator.isEmpty(instagram) && !validator.isURL(instagram)) ||
-      (!validator.isEmpty(linkedIn) && !validator.isURL(linkedIn)) ||
-      (!validator.isEmpty(facebook) && !validator.isURL(facebook))
-    ) {
-      console.log("invalid url");
+    if (!isStoryInputValid(data)) {
       return NextResponse.json({}, { status: statusCode.BAD_REQUEST });
     }
 
     // validate industry and gender objectID
     await prisma.industry.findUniqueOrThrow({
       where: {
-        id: industry,
+        id: industryId,
       },
     });
 
     await prisma.gender.findUniqueOrThrow({
       where: {
-        id: gender,
+        id: genderId,
       },
     });
 
     await prisma.story.create({
       data: {
-        name: businessName,
-        story: story,
+        businessName,
+        story,
         owner,
-        lat_long: [latitude, longitude],
+        lat_long: [String(latitude), String(longitude)],
         address,
         instagram,
         facebook,
         website,
         linkedIn,
         gender: {
-          connect: { id: gender },
+          connect: { id: genderId },
         },
         industry: {
-          connect: { id: industry },
+          connect: { id: industryId },
         },
         user: {
           connect: { id: user.id },
@@ -91,6 +71,87 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({}, { status: statusCode.CREATED });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({}, { status: statusCode.INTERNAL_ERROR });
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const data = await request.json();
+    const {
+      businessName,
+      address,
+      linkedIn,
+      instagram,
+      website,
+      facebook,
+      industryId,
+      genderId,
+      story,
+      owner,
+      latitude,
+      longitude,
+      id,
+    } = data;
+    const { user } = (await getServerSession(authOptions)) || {};
+
+    if (!user) {
+      return NextResponse.json({}, { status: statusCode.UNAUTHORIZED });
+    }
+
+    if (!isStoryInputValid(data)) {
+      return NextResponse.json({}, { status: statusCode.BAD_REQUEST });
+    }
+
+    await prisma.story.update({
+      where: {
+        id: id,
+      },
+      data: {
+        businessName,
+        story,
+        owner,
+        lat_long: [String(latitude), String(longitude)],
+        address,
+        instagram,
+        facebook,
+        website,
+        linkedIn,
+        gender: {
+          connect: { id: genderId },
+        },
+        industry: {
+          connect: { id: industryId },
+        },
+      },
+    });
+
+    return NextResponse.json({}, { status: statusCode.OK });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({}, { status: statusCode.INTERNAL_ERROR });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+
+    const { user } = (await getServerSession(authOptions)) || {};
+
+    if (!user) {
+      return NextResponse.json({}, { status: statusCode.UNAUTHORIZED });
+    }
+
+    await prisma.story.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json({}, { status: statusCode.OK });
   } catch (e) {
     console.error(e);
     return NextResponse.json({}, { status: statusCode.INTERNAL_ERROR });

@@ -55,6 +55,7 @@
     "jest-environment-jsdom": "^29.6.1",
     "jest-mock-extended": "^3.0.4",
     "msw": "^1.2.2",
+    "node-mocks-http": "^1.12.2",
     "prettier": "^3.0.0",
     "prisma": "^5.0.0"
   },

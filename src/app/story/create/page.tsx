@@ -1,11 +1,14 @@
 import React from "react";
 
-import { CreateStoryFormClient as CreateStoryForm } from "@/components/StoryForm";
+import { StoryFormClient as StoryForm } from "@/components/StoryForm";
 import { getSearchOptions } from "@/utils/api";
+import { TYPE } from "@/utils/type";
 
 export const Page = async () => {
   const { genders, industries } = await getSearchOptions();
-  return <CreateStoryForm genders={genders} industries={industries} />;
+  return (
+    <StoryForm genders={genders} industries={industries} type={TYPE.CREATED} />
+  );
 };
 
 export default Page;

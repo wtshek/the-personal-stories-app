@@ -5,36 +5,22 @@ import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { statusCode } from "@/utils/const";
+import { StoryDataInputType, TYPE } from "@/utils/type";
 
-import {
-  CreateStoryForm,
-  CreateStoryFormBaseProps,
-  TYPE,
-} from "./CreateStoryForm";
+import { StoryForm, StoryFormBaseProps } from "./StoryForm";
 
-export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
+export const StoryFormClient: FC<StoryFormBaseProps> = ({
   industries,
   genders,
+  data,
+  type,
 }) => {
   const [error, setError] = useState<string | undefined>();
   const router = useRouter();
 
-  const onSubmit = async (arg: {
-    businessName: string;
-    address: string;
-    linkedIn: string;
-    instagram: string;
-    website: string;
-    facebook: string;
-    industry: string;
-    gender: string;
-    story: string;
-    owner: string;
-    latitude: string;
-    longitude: string;
-  }) => {
+  const onSubmit = async (arg: StoryDataInputType) => {
     const res = await fetch("/api/story", {
-      method: "POST",
+      method: type === TYPE.CREATED ? "POST" : "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -59,13 +45,34 @@ export const CreateStoryFormClient: FC<CreateStoryFormBaseProps> = ({
     router.push("/");
   };
 
+  const onDelete = async (id: string) => {
+    if (type !== TYPE.EDIT || id === "") return;
+
+    const res = await fetch("/api/story", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.status === statusCode.INTERNAL_ERROR) {
+      setError("An error occur, please try again later");
+      return;
+    }
+
+    router.push("/");
+  };
+
   return (
-    <CreateStoryForm
+    <StoryForm
       industries={industries}
       genders={genders}
       onSubmit={onSubmit}
-      type={TYPE.CREATED}
+      type={type}
       error={error}
+      data={data}
+      onDelete={onDelete}
     />
   );
 };

@@ -1,2 +1,2 @@
-export * from "./CreateStoryFormClient";
-export * from "./CreateStoryForm";
+export * from "./StoryForm";
+export * from "./StoryFormClient";

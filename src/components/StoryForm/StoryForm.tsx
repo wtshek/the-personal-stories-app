@@ -3,13 +3,13 @@
 import React, { FC, FormEvent, useMemo, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 
-import { Button as FlowbitButton, Tooltip } from "flowbite-react";
+import { Tooltip } from "flowbite-react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { SelectInput } from "@/components/SelectInput";
+import { StoryDataInputType, TYPE } from "@/utils/type";
 
 import InfoIcon from "../../../public/info.svg";
 
@@ -18,7 +18,7 @@ const ICON_HEIGHT = 32;
 
 // TODO: add image feature
 
-export type CreateStoryFormBaseProps = {
+export type StoryFormBaseProps = {
   industries: {
     id: string;
     label: string;
@@ -27,51 +27,39 @@ export type CreateStoryFormBaseProps = {
     id: string;
     label: string;
   }[];
+  data?: StoryDataInputType;
+  type: TYPE;
 };
 
-export enum TYPE {
-  CREATED = "CREATED",
-  EDIT = "EDIT",
-}
-
-export type CreateStoryFormProps = CreateStoryFormBaseProps & {
-  onSubmit: (arg: {
-    businessName: string;
-    address: string;
-    linkedIn: string;
-    instagram: string;
-    website: string;
-    facebook: string;
-    industry: string;
-    gender: string;
-    story: string;
-    owner: string;
-    latitude: string;
-    longitude: string;
-  }) => void;
-  type: TYPE;
+export type StoryFormProps = StoryFormBaseProps & {
+  onSubmit: (arg: StoryDataInputType) => void;
+  onDelete: (id: string) => void;
   error?: string;
 };
 
-export const CreateStoryForm: FC<CreateStoryFormProps> = ({
+export const StoryForm: FC<StoryFormProps> = ({
   industries,
   genders,
   onSubmit,
   type,
   error,
+  data,
+  onDelete,
 }) => {
-  const [businessName, setBusinessName] = useState("");
-  const [owner, setOwner] = useState("");
-  const [address, setAddress] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [linkedIn, setLinkedIn] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [website, setWebsite] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [industry, setIndustry] = useState(industries[0].id);
-  const [gender, setGender] = useState(genders[0].id);
-  const [story, setStory] = useState("");
+  const [businessName, setBusinessName] = useState(data?.businessName || "");
+  const [owner, setOwner] = useState(data?.owner || "");
+  const [address, setAddress] = useState(data?.address || "");
+  const [latitude, setLatitude] = useState(data?.latitude || undefined);
+  const [longitude, setLongitude] = useState(data?.longitude || undefined);
+  const [linkedIn, setLinkedIn] = useState(data?.linkedIn || "");
+  const [instagram, setInstagram] = useState(data?.instagram || "");
+  const [website, setWebsite] = useState(data?.website || "");
+  const [facebook, setFacebook] = useState(data?.facebook || "");
+  const [industry, setIndustry] = useState(
+    data?.industryId || industries[0].id,
+  );
+  const [gender, setGender] = useState(data?.genderId || genders[0].id);
+  const [story, setStory] = useState(data?.story || "");
   const isCreate = type === TYPE.CREATED;
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
@@ -83,17 +71,22 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
     onSubmit?.({
       businessName,
       address,
-      longitude: String(longitude),
-      latitude: String(latitude),
+      longitude: longitude as number,
+      latitude: latitude as number,
       linkedIn,
       instagram,
       website,
       facebook,
-      industry,
-      gender,
+      industryId: industry,
+      genderId: gender,
       story,
       owner,
+      id: data?.id,
     });
+  };
+
+  const onDeleteClick = () => {
+    onDelete(data?.id || "");
   };
 
   return (
@@ -120,14 +113,15 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
             onChange={setLatitude}
             label="Latitude"
             id="latitude"
+            type="number"
           />
           <Input
             value={longitude}
             onChange={setLongitude}
             label="Longitude"
             id="longitude"
+            type="number"
           />
-          {/* <Image src={InfoIcon} alt="info-icon" width={32} height={32} /> */}
           <Tooltip
             content={
               <div>
@@ -151,21 +145,6 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
               />
             </button>
           </Tooltip>
-          {/* <button data-popover-target="lat-long-popover">
-            <InfoIcon
-              width={ICON_WIDTH}
-              height={ICON_HEIGHT}
-              className="fill-blue-700 stroke-1"
-            />
-          </button>
-          <div
-            data-popover
-            id="lat-long-popover"
-            role="tooltip"
-            className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800"
-          >
-            <div>You can use this link</div>
-          </div> */}
         </div>
         <Input value={owner} onChange={setOwner} label="Owner: " id="owner" />
         <SelectInput
@@ -197,7 +176,7 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
         <Input
           value={linkedIn}
           onChange={setLinkedIn}
-          label="LinkedIn: "
+          label="LinkedIn (optional): "
           id="linkedIn"
         />
         <Input
@@ -212,9 +191,19 @@ export const CreateStoryForm: FC<CreateStoryFormProps> = ({
           label="Instagram (optional): "
           id="instagram"
         />
-        <Button type="submit">Submit</Button>
+        <div className="flex justify-between">
+          <Button type="submit">Submit</Button>
+          {!isCreate && (
+            <Button
+              onClick={onDeleteClick}
+              className="bg-red-700 border-red-700"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
       </form>
-      <div className="text-red">{error}</div>
+      <div className="text-red-700 font-bold">{error}</div>
     </div>
   );
 };

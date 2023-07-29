@@ -1,11 +1,12 @@
 import React, { ChangeEvent, FC } from "react";
 
 type InputProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: any;
+  onChange: (value: any) => void;
   label: string;
   id: string;
   placeholder?: string;
+  type?: string;
 };
 
 export const Input: FC<InputProps> = ({
@@ -14,6 +15,7 @@ export const Input: FC<InputProps> = ({
   label,
   id,
   placeholder,
+  type,
 }) => {
   const onInputValueChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -28,6 +30,7 @@ export const Input: FC<InputProps> = ({
         id={id}
         value={value}
         onChange={onInputValueChange}
+        type={type}
       />
     </div>
   );

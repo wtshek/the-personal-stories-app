@@ -2,19 +2,20 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { gendersMock, industriesMock } from "@/utils/devTools/mockData";
+import { TYPE } from "@/utils/type";
 
-import { CreateStoryForm } from "../CreateStoryForm";
+import { StoryForm } from "../StoryForm";
 
 describe("Create Story Form Suite", () => {
   const onCreateMock = jest.fn();
 
-  const renderComponent = (type = "CREATE") =>
+  const renderComponent = (type: TYPE) =>
     render(
-      <CreateStoryForm
+      <StoryForm
         genders={gendersMock}
         industries={industriesMock}
         onSubmit={onCreateMock}
-        type={type as "CREATE" | "EDIT"}
+        type={type}
       />,
     );
 
@@ -23,19 +24,19 @@ describe("Create Story Form Suite", () => {
   });
 
   it("should render the create form", () => {
-    const { container } = renderComponent();
+    const { container } = renderComponent(TYPE.CREATED);
     expect(container).toMatchSnapshot();
   });
 
   it("should render the edit form", () => {
-    const { container } = renderComponent("EDIT");
+    const { container } = renderComponent(TYPE.EDIT);
     expect(container).toMatchSnapshot();
   });
 
   it("should submit the form", async () => {
     // TODO: include the react quill test
 
-    renderComponent();
+    renderComponent(TYPE.CREATED);
     const businessNameInput = screen.getByLabelText("Business Name:");
     const locationInput = screen.getByLabelText("Location:");
     const ownerInput = screen.getByLabelText("Owner:");
